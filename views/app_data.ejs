@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <style>
+    .farm-btn {
+      transition: 0.3s;
+    }
+
+    .ring-4 {
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes rotateFan {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .fan-rotating {
+      animation-name: rotateFan;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+
+
+  </style>
+
+
+</head>
+
+<body>
+  <div class="w-full min-h-screen bg-gray-50 flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="w-full flex items-center justify-between px-4 sm:px-10 bg-white shadow-lg rounded-b-2xl h-16 relative">
+
+      <!-- Left: Farm Selection -->
+      <button id="farmBtn"
+        class="px-5 sm:px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full shadow-lg flex items-center gap-2 transition-all duration-300">
+        FARM SELECTION
+        <svg class="w-4 h-4 transition-transform" id="farmArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Center: Title (Desktop only) -->
+      <h1
+        class="hidden sm:block text-xl sm:text-2xl font-bold text-gray-800 tracking-wide absolute left-1/2 -translate-x-1/2"
+        id="farmData">
+        Farm 1 Data
+      </h1>
+
+      <!-- Right: Multi Screen (Desktop) + Hamburger (Mobile) -->
+      <div>
+        <!-- Multi Screen (Desktop) -->
+        <!-- <a href="/multi_screen">
+          <button
+            class="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl shadow-md hover:scale-105 hover:bg-gray-200 transition-all duration-300">
+            <svg class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+            </svg>
+            <span class="font-medium text-gray-700">Multi Screen</span>
+          </button> -->
+
+        </a>
+
+        <!-- Hamburger (Mobile) -->
+        <button id="menuBtn"
+          class="sm:hidden p-2 bg-gray-100 rounded-xl shadow-md hover:bg-gray-200 transition-all duration-300">
+          <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <div id="mobileMenu"
+        class="hidden sm:hidden absolute top-16 right-4 w-48 bg-white shadow-lg rounded-xl p-4 space-y-3 z-[9999]">
+        <h1 class="text-lg font-semibold text-gray-800 text-3xl"> Farm 1 Data</h1>
+        <!-- <a href="/multi_screen">
+          <button class="flex items-center gap-2 w-full px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+            <svg class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+            </svg>
+            <span class="font-medium text-gray-700">Multi Screen</span>
+          </button>
+        </a> -->
+      </div>
+    </nav>
+
+    <script>
+      // Toggle mobile menu
+      document.getElementById("menuBtn").addEventListener("click", () => {
+        document.getElementById("mobileMenu").classList.toggle("hidden");
+      });
+    </script>
+    <script>
+      const buttons = document.querySelectorAll('.farm-btn');
+      const farmData = document.getElementById('farmData');
+
+      buttons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          // Remove active class from all
+          buttons.forEach(b => b.classList.remove('active-farm-btn'));
+
+          // Add active class to the clicked one
+          btn.classList.add('active-farm-btn');
+
+          // Update display text
+          const farmName = btn.dataset.farmname;
+          farmData.textContent = `This is ${farmName} data`;
+        });
+      });
+    </script>
+
+
+    <!-- Hidden Section -->
+    <div id="farmSection" class="hidden flex flex-col gap-4 px-4 py-4 transition-all duration-500 ease-in-out">
+
+      <% const colors=[ "bg-green-500 hover:bg-green-600" , "bg-blue-500 hover:bg-blue-600"
+        , "bg-yellow-500 hover:bg-yellow-600" , "bg-red-500 hover:bg-red-600" , "bg-purple-500 hover:bg-purple-600" ];
+        %>
+
+        <div id="farmButtons" class="flex gap-3 overflow-x-auto sm:justify-center">
+          <% allThings.forEach(function(thing, i) { %>
+            <button
+              class="farm-btn px-4 py-2 rounded-lg text-white font-semibold border-2 border-transparent transition-all duration-200 <%= colors[i % colors.length] %> <%= i === 0 ? 'active-farm-btn' : '' %>"
+              data-thingid="<%= thing.thingId %>">
+              Farm <%= i + 1 %>
+            </button>
+            <% }) %>
+        </div>
+
+
+
+
+
+
+        <!-- Carousel Info Box -->
+        <div class="flex items-center justify-center hidden">
+          <div
+            class="flex items-center gap-3 w-full max-w-xl bg-yellow-300 rounded-xl p-4 shadow-lg flex-wrap sm:flex-nowrap">
+
+            <!-- Prev -->
+            <!-- <button id="prevBtn" class="p-2 bg-black text-white rounded-full">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button> -->
+
+            <!-- Info -->
+            <div class="flex-1 text-center sm:text-left min-w-[150px] mt-2 sm:mt-0">
+              <h2 id="farmTitle" class="font-bold text-gray-900">Farm No.: 1</h2>
+              <p id="reqValues" class="text-sm text-gray-800">Req. Temp: 27.5 | Req. Hum: 76</p>
+              <p id="curValues" class="text-sm text-gray-800">Current Temp: 29.5 | Current Hum: 70</p>
+              <div id="farmTags" class="flex flex-wrap justify-center sm:justify-start gap-2 mt-2">
+                <span class="px-2 py-1 bg-green-500 text-white text-xs rounded-full">F1</span>
+                <span class="px-2 py-1 bg-green-500 text-white text-xs rounded-full">F2</span>
+                <span class="px-2 py-1 bg-green-500 text-white text-xs rounded-full">F3</span>
+                <span class="px-2 py-1 bg-gray-400 text-white text-xs rounded-full">F4</span>
+                <span class="px-2 py-1 bg-gray-400 text-white text-xs rounded-full">F5</span>
+                <span class="px-2 py-1 bg-gray-400 text-white text-xs rounded-full">F6</span>
+              </div>
+            </div>
+
+            <!-- Next -->
+            <!-- <button id="nextBtn" class="p-2 bg-black text-white rounded-full">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button> -->
+          </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="w-full sticky top-0 z-50 bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md">
+      <div class="flex flex-wrap sm:flex-nowrap justify-around text-white font-medium p-2">
+
+        <!-- Tab Template -->
+        <label
+          class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 px-3 cursor-pointer transition-all duration-300 rounded-lg m-1
+             bg-opacity-0 hover:bg-white/20 hover:scale-105 peer-checked:bg-white peer-checked:text-indigo-600 shadow-sm">
+          <input type="radio" name="tab" class="hidden peer" checked data-tab="main">
+          <!-- Dashboard Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12h7V3H3v9zm0 9h7v-7H3v7zm11 0h7v-11h-7v11zm0-18v5h7V3h-7z" />
+          </svg>
+          <span class="text-xs sm:text-sm font-semibold">Main</span>
+        </label>
+
+        <!-- Device -->
+        <label
+          class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 px-3 cursor-pointer transition-all duration-300 rounded-lg m-1
+             bg-opacity-0 hover:bg-white/20 hover:scale-105 peer-checked:bg-white peer-checked:text-indigo-600 shadow-sm">
+          <input type="radio" name="tab" class="hidden peer" data-tab="device">
+          <!-- Device Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <rect x="4" y="2" width="16" height="20" rx="2" ry="2" stroke-width="2" />
+            <rect x="8" y="6" width="8" height="12" rx="1" ry="1" fill="currentColor" opacity="0.2" />
+            <circle cx="12" cy="18" r="1.5" fill="currentColor" />
+          </svg>
+          <span class="text-xs sm:text-sm font-semibold">Device</span>
+        </label>
+
+        <!-- Flock -->
+        <label
+          class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 px-3 cursor-pointer transition-all duration-300 rounded-lg m-1
+             bg-opacity-0 hover:bg-white/20 hover:scale-105 peer-checked:bg-white peer-checked:text-indigo-600 shadow-sm">
+          <input type="radio" name="tab" class="hidden peer" data-tab="flock">
+          <!-- Chick Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 3a6 6 0 00-6 6c0 1.76.76 3.34 1.97 4.45-.44 1.41-1.62 2.69-3.47 3.73 2.63.66 5.28.32 7.19-1.03a6 6 0 108.28-8.51A6 6 0 0012 3z" />
+            <circle cx="10" cy="9" r="1.5" fill="white" />
+          </svg>
+          <span class="text-xs sm:text-sm font-semibold">Flock</span>
+        </label>
+
+        <!-- Graph -->
+        <label
+          class="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 px-3 cursor-pointer transition-all duration-300 rounded-lg m-1
+             bg-opacity-0 hover:bg-white/20 hover:scale-105 peer-checked:bg-white peer-checked:text-indigo-600 shadow-sm">
+          <input type="radio" name="tab" class="hidden peer" data-tab="graph">
+          <!-- Analytics Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5 12h2v7H5v-7zm6-5h2v12h-2V7zm6 8h2v4h-2v-4z" />
+          </svg>
+          <span class="text-xs sm:text-sm font-semibold">Graph</span>
+        </label>
+
+      </div>
+    </div>
+
+
+    <main id="mainContent" class="p-4">
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <!-- Bottom Navigation -->
+    <div
+      class="fixed bottom-0 w-full flex justify-around bg-white/95 backdrop-blur-md border-t shadow-lg py-2 sm:py-3 z-50">
+
+      <!-- Dashboard -->
+      <a href="/app_data" id="btn-dashboard"
+        class="flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 transition-all duration-300 rounded-lg sm:gap-2 sm:py-4">
+        <svg id="icon-dashboard" class="w-6 h-6 sm:w-7 sm:h-7 text-red-600 transition-colors duration-300"
+          fill="currentColor" viewBox="0 0 24 24">
+          <path d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75h-5.25v-6.75H9v6.75H3.75A.75.75 0 013 21V9.75z" />
+        </svg>
+        <span id="text-dashboard"
+          class="text-xs sm:text-sm font-semibold text-red-600 transition-colors duration-300">Dashboard</span>
+      </a>
+
+      <!-- Profile -->
+      <a href="/app_data/profile" id="btn-profile"
+        class="flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 transition-all duration-300 rounded-lg sm:gap-2 sm:py-4">
+        <svg id="icon-profile" class="w-6 h-6 sm:w-7 sm:h-7 text-gray-600 transition-colors duration-300"
+          fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd"
+            d="M12 12c2.7 0 4.875-2.175 4.875-4.875S14.7 2.25 12 2.25 7.125 4.425 7.125 7.125 9.3 12 12 12zm0 1.5c-3.15 0-9.375 1.575-9.375 4.725V21h18.75v-2.775c0-3.15-6.225-4.725-9.375-4.725z"
+            clip-rule="evenodd" />
+        </svg>
+        <span id="text-profile"
+          class="text-xs sm:text-sm font-semibold text-gray-600 transition-colors duration-300">Profile</span>
+      </a>
+
+    </div>
+
+
+    <!-- JS -->
+    <script>
+      function setActiveTabFromURL() {
+        const path = window.location.pathname.split("/").pop(); // 'dashboard' or 'profile'
+        if (path === 'dashboard' || path === '') setActiveTabClasses('dashboard');
+        if (path === 'profile') setActiveTabClasses('profile');
+      }
+
+      function setActiveTabClasses(tab) {
+        if (tab === 'dashboard') {
+          dashboardBtn.classList.add('bg-red-100');
+          profileBtn.classList.remove('bg-red-100');
+
+          iconDashboard.classList.replace('text-gray-600', 'text-red-600');
+          iconProfile.classList.replace('text-red-600', 'text-gray-600');
+
+          textDashboard.classList.replace('text-gray-600', 'text-red-600');
+          textProfile.classList.replace('text-red-600', 'text-gray-600');
+        } else if (tab === 'profile') {
+          profileBtn.classList.add('bg-red-100');
+          dashboardBtn.classList.remove('bg-red-100');
+
+          iconProfile.classList.replace('text-gray-600', 'text-red-600');
+          iconDashboard.classList.replace('text-red-600', 'text-gray-600');
+
+          textProfile.classList.replace('text-gray-600', 'text-red-600');
+          textDashboard.classList.replace('text-red-600', 'text-gray-600');
+        }
+      }
+
+      // Call on page load
+      window.addEventListener('DOMContentLoaded', setActiveTabFromURL);
+
+      const farmBtn = document.getElementById("farmBtn");
+      const farmArrow = document.getElementById("farmArrow");
+      const farmSection = document.getElementById("farmSection");
+
+      farmBtn.addEventListener("click", () => {
+        farmSection.classList.toggle("hidden");
+        farmArrow.classList.toggle("rotate-180");
+      });
+
+      const farms = [
+        { no: 1, reqT: 27.5, reqH: 76, curT: 29.5, curH: 70, color: "bg-yellow-300" },
+        { no: 2, reqT: 28.0, reqH: 75, curT: 30.1, curH: 71, color: "bg-pink-300" },
+        { no: 3, reqT: 26.8, reqH: 74, curT: 28.0, curH: 73, color: "bg-indigo-300" },
+        { no: 4, reqT: 29.0, reqH: 72, curT: 30.5, curH: 74, color: "bg-teal-300" },
+        { no: 5, reqT: 27.2, reqH: 77, curT: 28.5, curH: 72, color: "bg-gray-300" }
+      ];
+
+      let currentFarm = 0;
+      const farmTitle = document.getElementById("farmTitle");
+      const reqValues = document.getElementById("reqValues");
+      const curValues = document.getElementById("curValues");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      function updateFarm() {
+        const farm = farms[currentFarm];
+        farmTitle.textContent = `Farm No.: ${farm.no}`;
+        reqValues.textContent = `Req. Temp: ${farm.reqT} | Req. Hum: ${farm.reqH}`;
+        curValues.textContent = `Current Temp: ${farm.curT} | Current Hum: ${farm.curH}`;
+        farmTitle.parentElement.parentElement.className =
+          `flex items-center gap-3 w-full max-w-xl ${farm.color} rounded-xl p-4 shadow-lg flex-wrap sm:flex-nowrap`;
+      }
+
+      // prevBtn.addEventListener("click", () => {
+      //   currentFarm = (currentFarm - 1 + farms.length) % farms.length;
+      //   updateFarm();
+      // });
+
+      // nextBtn.addEventListener("click", () => {
+      //   currentFarm = (currentFarm + 1) % farms.length;
+      //   updateFarm();
+      // });
+
+      updateFarm(); // Init first farm
+
+
+      const tabs = document.querySelectorAll('input[name="tab"]');
+      const mainContent = document.getElementById("mainContent");
+
+      const tabData = {
+        main: `
+
+              <div class="w-full min-h-screen flex flex-col gap-10 p-6 bg-gradient-to-br from-blue-50 to-green-50">
+              <!-- Section 1: Info Boxes -->
+              <div class="w-full max-w-6xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-6">
+             
+                  <div class="relative mx-auto w-full max-w-[440px] rounded-2xl bg-white p-5 shadow-xl ring-1 ring-black/5 hover:shadow-2xl transition-all duration-300">
+                  <!-- Flex wrapper -->
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                  <div class="relative mx-auto w-full max-w-xl rounded-3xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+
+                      <!-- Left: Main temperature -->
+                      <div class="flex-1 text-center sm:text-left">
+                        <p class="text-sm text-neutral-500 uppercase tracking-wide">Avg. Temperature</p>
+                        <div class="flex items-center justify-center sm:justify-start gap-2 mt-1">
+                        <span class=" text-4xl"> 🌡️</span>
+                          <p class="text-4xl sm:text-3xl font-extrabold text-neutral-900 leading-tight"><span class="avg_temp">--</span>  °C</p>
+                        </div>
+
+                        <div class="mt-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-3">
+                          <span class=" flex gap-3 items-center px-4 py-1 rounded-full bg-indigo-500 text-white font-semibold shadow">
+                            <span class="font-medium">Required Temp:</span>
+                            <span class="required_temp">++</span>°C
+                        </span>
+                          
+                          <span class="text-sm text-red-600 flex items-center gap-1">
+                           <span class=" text-4xl"> 🏡</span>
+                            Outside: <span class="TEMP_5">--</span> °C
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Right: Readings grid -->
+                      <div class="w-full sm:w-40 grid grid-cols-2 gap-4 text-center sm:text-right">
+                        <div class="bg-gradient-to-tr from-green-100 to-green-200 rounded-xl p-2 shadow-inner hover:scale-105 transform transition">
+                          <p class="text-xs sm:text-sm text-neutral-600">Temp-1</p>
+                          <p class="text-base sm:text-sm font-semibold text-green-800"><span class="TEMP_1">--</span> °C</p>
+                        </div>
+                        <div class="bg-gradient-to-tr from-green-100 to-green-200 rounded-xl p-2 shadow-inner hover:scale-105 transform transition">
+                          <p class="text-xs sm:text-sm text-neutral-600">Temp-2</p>
+                          <p class="text-base sm:text-sm font-semibold text-green-800"><span class="TEMP_2">--</span> °C</p>
+                        </div>
+                        <div class="bg-gradient-to-tr from-green-100 to-green-200 rounded-xl p-2 shadow-inner hover:scale-105 transform transition">
+                          <p class="text-xs sm:text-sm text-neutral-600">Temp-3</p>
+                          <p class="text-base sm:text-sm font-semibold text-green-800"><span class="TEMP_3">--</span>°C</p>
+                        </div>
+                        <div class="bg-gradient-to-tr from-green-100 to-green-200 rounded-xl p-2 shadow-inner hover:scale-105 transform transition">
+                          <p class="text-xs sm:text-sm text-neutral-600">Temp-4</p>
+                          <p class="text-base sm:text-sm font-semibold text-green-800"><span class="TEMP_4">--</span>°C</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  </div>
+                </div>
+
+
+
+               <div class="relative mx-auto w-full max-w-[440px] rounded-3xl bg-gradient-to-tr from-indigo-50 via-purple-50 to-pink-50 p-6 shadow-xl ring-1 ring-black/5 hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <!-- Flex wrapper -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+
+                  <!-- Left: Main temperature -->
+                  <div class="flex-1 text-center sm:text-left">
+                    <p class="text-xs sm:text-sm text-neutral-500 tracking-wide">Avg. Humidity</p>
+                    <p class="text-5xl sm:text-4xl font-extrabold text-neutral-900 leading-tight mt-1"><span class="humidity">++</span> %</p>
+
+                    <div class="mt-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-3">
+                      <span class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white px-5 py-1.5 text-sm sm:text-xs font-semibold shadow-lg">
+                        Req-Humidity: ++%
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Right: Readings grid -->
+                  <div class="w-full sm:w-36 grid grid-cols-2 gap-x-6 gap-y-4 text-center sm:text-right">
+                    <div class="bg-white/70 backdrop-blur-md rounded-xl p-2 shadow-md hover:shadow-xl transition duration-300">
+                      <p class="text-[12px] sm:text-[14px] text-neutral-500 font-medium">Hum-1</p>
+                      <p class="text-base sm:text-sm font-bold text-green-700 mt-1"><span class="humidity">++</span> %</p>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-md rounded-xl p-2 shadow-md hover:shadow-xl transition duration-300">
+                      <p class="text-[12px] sm:text-[14px] text-neutral-500 font-medium">Hum-2</p>
+                      <p class="text-base sm:text-sm font-bold text-green-700 mt-1">++%</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Optional: subtle decorative element -->
+                <div class="absolute -top-4 -right-4 w-16 h-16 bg-purple-200/50 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-4 -left-6 w-24 h-24 bg-pink-200/40 rounded-full blur-3xl"></div>
+              </div>
+
+
+
+              <div class="mx-auto w-full max-w-md sm:max-w-lg bg-white rounded-3xl shadow-xl ring-1 ring-black/5 p-5 transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                  <!-- CO₂ Section -->
+                  <div class="flex flex-col items-center text-center p-5 bg-gradient-to-br from-emerald-100 via-emerald-200 to-emerald-50 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <div class="relative flex items-center justify-center w-20 h-20 rounded-full bg-emerald-400 text-white shadow-lg mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                      </svg>
+                      <span class="absolute -bottom-2 right-2 bg-white text-emerald-500 text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">CO₂</span>
+                    </div>
+                    <p class="text-lg font-bold text-neutral-900 mb-2 tracking-wide">Carbon Dioxide</p>
+                    <span class="block rounded-full bg-neutral-50 text-neutral-800 px-5 py-2 text-base font-semibold shadow-sm w-full">Current: <span class="text-emerald-600 font-bold"><span class="gas1">--</span></span>ppm</span>
+                  </div>
+
+                  <!-- NH₃ Section -->
+                  <div class="flex flex-col items-center text-center p-5 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-50 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <div class="relative flex items-center justify-center w-20 h-20 rounded-full bg-blue-400 text-white shadow-lg mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                      </svg>
+                      <span class="absolute -bottom-2 right-2 bg-white text-blue-500 text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">NH₃</span>
+                    </div>
+                    <p class="text-lg font-bold text-neutral-900 mb-2 tracking-wide">Ammonia</p>
+                    <span class="block rounded-full bg-neutral-50 text-neutral-800 px-5 py-2 text-base font-semibold shadow-sm w-full">Current: <span class="gas2">--</span>ppm</span>
+                  </div>
+
+                </div>
+              </div>
+
+
+              <div class="mx-auto w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl ring-1 ring-black/5 transition-all duration-300 hover:shadow-2xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  
+                  <!-- Minimum Vent -->
+                  <div class="flex flex-col items-center text-center p-4 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300">
+                    <p class="text-xl sm:text-2xl font-bold text-neutral-900 mb-3">Minimum Vent</p>
+                    <div class="inline-flex items-center justify-center rounded-full p-4 bg-emerald-200 shadow-lg relative">
+                      <img id="minVentFan" src="/images/fan1.png" alt="Fan" class="w-16 h-16 sm:w-24 sm:h-24" />
+                    </div>
+                    <p class="mt-2 text-lg sm:text-xl font-semibold text-emerald-700">
+                      <span class="min_vent_percent text-blue-600 font-bold text-xl">++</span>
+                    </p>
+                  </div>
+
+                  <!-- Maximum Vent -->
+                  <div class="flex flex-col items-center text-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300">
+                    <p class="text-xl sm:text-2xl font-bold text-neutral-900 mb-3">Maximum Vent</p>
+                    <div class="inline-flex items-center justify-center rounded-full p-4 bg-blue-200 shadow-lg relative">
+                      <img id="maxVentFan" src="/images/fan1.png" alt="Fan" class="w-16 h-16 sm:w-24 sm:h-24" />
+                    </div>
+                    <p class="mt-2 text-lg sm:text-xl font-semibold text-blue-700">
+                      <span class="max_vent_percent text-blue-600 font-bold text-xl">++</span>
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+                 
+            </div>
+            </div>
+
+              <!-- Section 2: Device Status -->
+              <div class="w-full flex items-center justify-center">
+                <div class="w-full max-w-6xl bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl border border-gray-200 p-6">
+                  <!-- Header -->
+                  <div class="flex justify-between items-center bg-gradient-to-r from-green-600 to-green-400 text-white font-bold rounded-xl px-6 py-3 mb-6 shadow">
+                    <span class="text-lg">DESCRIPTION</span>
+                    <span class="text-lg">VALUE</span>
+                  </div>
+
+                  <!-- Grid layout -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                    <!-------------------------------------------------------------------------- Fan ------------------------------------------------------------------------------------>
+                    <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                      <span class="font-medium">Fan</span>
+                      <span class=" fan_mode px-4 py-1 rounded-full bg-blue-500 text-white font-semibold shadow">--</span>
+                    </div>
+
+                    <!------------------------------------------------------------------------------ Alarm ----------------------------------------------------------------------------->
+                    <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                      <span class="font-medium">Alarm</span>
+                      <span class="overall_alarm flex items-center px-4 py-1 rounded-full bg-green-500 text-white font-semibold shadow">
+                         OFF
+                      </span>
+                    </div>
+
+                    <!------------------------------------------------------------------------------------ Coolpad -------------------------------------------------------------------------->
+                    <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                      <span class="font-medium">Coolpad</span>
+                      <span class="coolpad flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">
+                        OFF
+                      </span>
+                    </div>
+
+                    <!--------------------------------------------------------------------------------- Fogger ------------------------------------------------------------------------------>
+                  <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                    <span class="font-medium">Fogger</span>
+                    <span class="fogger flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">OFF</span>
+                  </div>
+
+                   <!-------------------------------------------------------------------------------------------- Heater ----------------------------------------------------------------------->
+                      <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                        <span class="font-medium">Heater</span>
+                        <span class="heater flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">
+                          OFF
+                        </span>
+                      </div>
+
+                    <!--------------------------------------------------------------------------- Cross Vent ------------------------------------------------------------------------------------->
+                      <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                        <span class="font-medium">Cross Vent</span>
+                        <span class="cross_vent flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">OFF</span>
+                      </div>
+
+                      <!---------------------------------------------------------------------------- Tunnel Inlet ------------------------------------------------------------->
+                      <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                        <span class="font-medium">Tunnel Inlet</span>
+                        <span class="tunnel flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">OFF</span>
+                      </div>
+
+                   
+                    <!-------------------------------------------------------------------------------- Feeder ------------------------------------------------------------------------------>
+                    <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                      <span class="font-medium">Feeder</span>
+                      <span class="feeder flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">
+                        OFF
+                      </span>
+                    </div>
+
+                  <!----------------------------------------------------------------------------------- Light ------------------------------------------------------------------------------------------->
+                  <div class=" w-full flex justify-between items-center px-4 py-3 bg-gray-50 rounded-xl shadow hover:scale-105 transition">
+                    <span class="font-medium">Light</span>
+                    <span class="light flex items-center px-4 py-1 rounded-full bg-red-500 text-white font-semibold shadow">
+                      OFF
+                    </span>
+                  </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="w -full h-10 p-10">
+                </div>
+            </div>
+
+                `,
+        device: `
+            <div class="w-full h-auto px-3 sm:px-4 bg-transparent py-6 sm:py-8">
+            <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl p-4 sm:p-2">
+
+              <!-- FAN GRID -->
+                
+              <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4 p-2 sm:p-4">
+
+                <!---------------------------------------------------------- Fan 1 Card ---------------------------------------------->
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 overflow-hidden text-center p-2 sm:p-3">
+                  <div class="fan_1 text-white py-2 sm:py-3 font-bold flex flex-col items-center gap-1 sm:gap-2 rounded-lg transition-colors duration-300">
+                    <img src="/images/fan.png" alt="Fan" class="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+                    <span class="text-xs sm:text-base font-semibold text-black">Fan 1</span>
+                  </div>
+                  <div class="py-2 sm:py-3 text-sm sm:text-lg font-semibold text-black">
+                    <span class="fan_auto_temp1 text-blue-600"></span>
+                    <span class="fan_manual_temp1 text-gray-600"></span> °C
+                  </div>
+                </div>
+
+
+                 <!--------------------------------------------------------------- Fan 2 Card -------------------------------------------------->
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 overflow-hidden text-center p-2 sm:p-3">
+                  <div class="fan_2 text-white py-2 sm:py-3 font-bold flex flex-col items-center gap-1 sm:gap-2 rounded-lg transition-colors duration-300">
+                    <img src="/images/fan.png" alt="Fan" class="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+                    <span class="text-xs sm:text-base font-semibold text-black">Fan 2</span>
+                  </div>
+                  <div class="py-2 sm:py-3 text-sm sm:text-lg font-semibold text-black">
+                    <span class="fan_auto_temp2 text-blue-600"></span>
+                    <span class="fan_manual_temp2 text-gray-600"></span> °C
+                  </div>
+                </div>
+
+                <!----------------------------------------------------------------- Fan 3 Card ------------------------------------------------------------>
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 overflow-hidden text-center p-2 sm:p-3">
+                  <div class="fan_3 text-white py-2 sm:py-3 font-bold flex flex-col items-center gap-1 sm:gap-2 rounded-lg transition-colors duration-300">
+                    <img src="/images/fan.png" alt="Fan" class="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+                    <span class="text-xs sm:text-base font-semibold text-black">Fan 3</span>
+                  </div>
+                  <div class="py-2 sm:py-3 text-sm sm:text-lg font-semibold text-black">
+                    <span class="fan_auto_temp3 text-blue-600"></span>
+                    <span class="fan_manual_temp3 text-gray-600"></span> °C
+                  </div>
+                </div>
+
+                 <!--------------------------------------------------------------------------- Fan 4 Card -------------------------------------------------------------->
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 overflow-hidden text-center p-2 sm:p-3">
+                  <div class="fan_4 text-white py-2 sm:py-3 font-bold flex flex-col items-center gap-1 sm:gap-2 rounded-lg transition-colors duration-300">
+                    <img src="/images/fan.png" alt="Fan" class="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+                    <span class="text-xs sm:text-base font-semibold text-black">Fan 4</span>
+                  </div>
+                  <div class="py-2 sm:py-3 text-sm sm:text-lg font-semibold text-black">
+                    <span class="fan_auto_temp4 text-blue-600"></span>
+                    <span class="fan_manual_temp4 text-gray-600"></span> °C
+                  </div>
+                </div>
+
+                   <!-------------------------------------------------------------------------- Fan 5 Card -------------------------------------------------------------->
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 overflow-hidden text-center p-2 sm:p-3">
+                  <div class="fan_5 text-white py-2 sm:py-3 font-bold flex flex-col items-center gap-1 sm:gap-2 rounded-lg transition-colors duration-300">
+                    <img src="/images/fan.png" alt="Fan" class="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+                    <span class="text-xs sm:text-base font-semibold text-black">Fan 5</span>
+                  </div>
+                  <div class="py-2 sm:py-3 text-sm sm:text-lg font-semibold text-black">
+                    <span class="fan_auto_temp5 text-blue-600"></span>
+                    <span class="fan_manual_temp5 text-gray-600"></span> °C
+                  </div>
+                </div>
+
+              <!---------------------------------------------------------------------------------------------- Fan 6 Card ------------------------------------------------------------------------->
+                <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105 overflow-hidden text-center p-2 sm:p-3">
+                  <div class="fan_6 text-white py-2 sm:py-3 font-bold flex flex-col items-center gap-1 sm:gap-2 rounded-lg transition-colors duration-300">
+                    <img src="/images/fan.png" alt="Fan" class="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+                    <span class="text-xs sm:text-base font-semibold text-black">Fan 6</span>
+                  </div>
+                  <div class="py-2 sm:py-3 text-sm sm:text-lg font-semibold text-black">
+                    <span class="fan_auto_temp6 text-blue-600"></span>
+                    <span class="fan_manual_temp6 text-gray-600"></span> °C
+                  </div>
+                </div>
+
+                </div>
+                </div>
+
+          <!-- Section Divider -->
+          <div class="my-8 border-t border-gray-200"></div>
+
+          <!-- Device Controls Section -->
+          <div class="container mx-auto px-2 sm:px-4   flex flex-wrap gap-4">
+            <div class="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+
+
+            <!-------------------------------------------------------------------------------------- ALARM CARD -------------------------------------------------------------------------->
+        <div class="bg-gradient-to-br from-red-500 to-white rounded-2xl shadow-xl hover:shadow-2xl 
+                    transition-all duration-300 p-5 w-full sm:w-auto mx-auto border border-red-200 mb-6">
+
+          <!-- Header -->
+          <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl shadow-md 
+                      p-4 flex items-center justify-between">
+
+            <!-- Icon + Title -->
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-red-100 rounded-xl flex items-center justify-center shadow-inner">
+                <img src="/images/alarm.png" alt="Cross Vent" 
+                    class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
+              </div>
+
+              <h2 class="text-xl font-bold text-gray-800 tracking-wide">
+                ALARM
+              </h2>
+            </div>
+
+            <!-- Alarm Status -->
+            <span class="overall_alarm flex items-center px-4 py-1.5 rounded-full 
+                        bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+              OFF
+            </span>
+          </div>
+
+          <!-- Info Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm sm:text-base">
+            <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ High Temp Alarm Set Point  : </span>
+                <span class="high_temp_alarm font-bold text-black ">++</span>
+            </div>
+
+            <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Low Temp Alarm Set Point  :</span>
+                <span class="font-bold text-black low_temp_alarm">++</span>
+            </div>
+
+            <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                        shadow-sm border border-gray-100 hover:shadow-md transition">
+              <span class="flex items-center gap-1 text-gray-600 font-medium">💧 High Humidity Alarm Set Point : </span>
+              <span class="high_hum_alarm font-bold text-black">++</span>
+            </div>
+
+            <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                        shadow-sm border border-gray-100 hover:shadow-md transition">
+              <span class="flex items-center gap-1 text-gray-600 font-medium">💧 Low Humidity Alarm Set Point : </span>
+              <span class="low_hum_alarm font-bold text-black">++</span>
+            </div>
+          </div>
+          </div>
+
+
+            
+          <!------------------------------------------------------------------------ HEATER CARD -------------------------------------------------------------------------->
+          <div class="bg-gradient-to-br from-orange-500 to-white rounded-2xl shadow-xl hover:shadow-2xl 
+                      transition-all duration-300 p-5 w-full sm:w-auto mx-auto border border-orange-200 mb-6">
+
+            <!-- Header -->
+            <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl shadow-md 
+                        p-4 flex items-center justify-between">
+
+              <!-- Icon + Title -->
+              <div class="flex items-center gap-3">
+                <div class="p-3 bg-green-100 rounded-xl flex items-center justify-center shadow-inner">
+                  <img src="/images/heater.png" alt="Tunnel" 
+                      class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-800 tracking-wide">
+                  HEATER
+                </h2>
+              </div>
+
+              <!-- HEATER Status -->
+              <span class="heater flex items-center px-4 py-1.5 rounded-full bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+                OFF
+              </span>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm sm:text-base">
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Heater Set Point :</span>
+                <span class="heater_set_point font-bold text-black">++</span>
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-------------------------------------------------------------------------------- COOLPAD CARD ------------------------------------------------------------------------->
+          <div class="bg-gradient-to-br from-sky-700 to-white rounded-2xl shadow-xl hover:shadow-2xl 
+                      transition-all duration-300 p-5 w-full h-33  sm:w-auto mx-auto border border-sky-200 mb-6">
+
+            <!-- Header -->
+            <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl shadow-md 
+                        p-4 flex items-center justify-between">
+
+              <!-- Icon + Title -->
+              <div class="flex items-center gap-3">
+                <div class="p-3 bg-sky-100 rounded-xl flex items-center justify-center shadow-inner">
+                  <img src="/images/coolpad.png" alt="Cross Vent" 
+                      class="h-7 w-7 sm:h-9 sm:w-9 object-contain" />
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-800 tracking-wide">
+                  COOLPAD
+                </h2>
+              </div>
+
+              <!-- COOLPAD Status -->
+              <span class="coolpad flex items-center px-4 py-1.5 rounded-full 
+                          bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+                OFF
+              </span>
+            </div>
+
+            <!-- Info Grid 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm sm:text-base">
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Auto Set Temp</span>
+                <span class="font-semibold text-gray-800">32°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Auto Set Hum</span>
+                <span class="font-semibold text-gray-800">27°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">Manual Set Temp</span>
+                <span class="font-semibold text-gray-800">High</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">Manual Set Hum</span>
+                <span class="font-semibold text-gray-800">High</span>
+              </div>
+
+             
+
+            </div>
+
+            -->
+          </div>
+
+
+            <!----------------------------------------------------------------------- FOGGER CARD -------------------------------------------------------------------------------->
+          <div class="bg-gradient-to-br from-teal-500 to-white rounded-2xl shadow-xl hover:shadow-2xl 
+                      transition-all duration-300 p-5 w-full h-33 sm:w-auto mx-auto border border-teal-200 mb-6">
+
+            <!-- Header -->
+            <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl shadow-md 
+                        p-4 flex items-center justify-between">
+
+              <!-- Icon + Title -->
+              <div class="flex items-center gap-3">
+                <div class="p-3 bg-teal-100 rounded-xl flex items-center justify-center shadow-inner">
+                  <img src="/images/fog.png" alt="Fogger" 
+                      class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-800 tracking-wide">
+                  FOGGER
+                </h2>
+              </div>
+
+              <!-- FOGGER Status -->
+              <span class="fogger flex items-center px-4 py-1.5 rounded-full 
+                          bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+                OFF
+              </span>
+            </div>
+
+            <!-- Info Grid 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm sm:text-base">
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Auto Set Temp</span>
+                <span class="font-semibold text-gray-800">32°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Auto Set Hum</span>
+                <span class="font-semibold text-gray-800">27°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">Manual Set Temp</span>
+                <span class="font-semibold text-gray-800">High</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">Manual Set Humidity</span>
+                <span class="font-semibold text-gray-800">High</span>
+              </div>
+            </div>
+            -->
+          </div>
+
+          <!---------------------------------------------------------------------------------- CROSSVENT CARD --------------------------------------------------------------------->
+          <div class="bg-gradient-to-br from-blue-500 to-white rounded-2xl shadow-xl hover:shadow-2xl 
+                      transition-all duration-300 p-5 w-full h-33 sm:w-auto mx-auto border border-blue-200 mb-6">
+
+            <!-- Header -->
+            <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl shadow-md 
+                        p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+              <!-- Left Side: Icon + Title + Status (compact on mobile) -->
+              <div class="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+
+                <!-- Icon -->
+                <div class="p-3 bg-red-100 rounded-xl flex items-center justify-center shadow-inner shrink-0">
+                  <img src="/images/crossvent.png" alt="Cross Vent" 
+                      class="h-7 w-7 object-contain" />
+                </div>
+
+                <!-- Text + Badge (ON/OFF) -->
+                <div class="flex items-center gap-2">
+                  <h2 class="text-lg sm:text-lg font-bold text-gray-800 tracking-wide">
+                    CROSSVENT
+                  </h2>
+
+                  <!-- CROSSVENT Status -->
+                  <span class="cross_vent px-3 py-1.5 rounded-full bg-red-500 
+                              text-white font-semibold shadow text-sm ml-2">
+                    OFF
+                  </span>
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Info Grid 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm sm:text-base">
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Set Cross Temp</span>
+                <span class="font-semibold text-gray-800">32°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">💨 Set CO2</span>
+                <span class="font-semibold text-gray-800">27°C</span>
+              </div>
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">💨 Set NH3</span>
+                <span class="font-semibold text-gray-800">27°C</span>
+              </div>
+
+            </div>
+            -->
+          </div>
+
+
+
+         
+          <!------------------------------------------------------------------------- TUNNEL CARD-------------------------------------------------------------------------------- -->
+          <div class="bg-gradient-to-br from-green-500 to-white rounded-2xl shadow-xl hover:shadow-2xl 
+                      transition-all duration-300 p-5 w-full h-33 sm:w-auto mx-auto border border-green-200 mb-6">
+
+            <!-- Header -->
+            <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl shadow-md 
+                        p-4 flex items-center justify-between">
+
+              <!-- Icon + Title -->
+              <div class="flex items-center gap-3">
+                <div class="p-3 bg-green-100 rounded-xl flex items-center justify-center shadow-inner">
+                  <img src="/images/tunnel.png" alt="Tunnel" 
+                      class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-800 tracking-wide">
+                  TUNNEL
+                </h2>
+              </div>
+
+              <!-- TUNNEL Status -->
+              <span class="tunnel flex items-center px-4 py-1.5 rounded-full bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+                OFF
+              </span>
+            </div>
+
+            <!-- Info Grid 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 text-sm sm:text-base">
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">🌡️ Set Tunnel Temp</span>
+                <span class="font-semibold text-gray-800">32°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium">💨 Set CO2</span>
+                <span class="font-semibold text-gray-800">27°C</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 
+                          shadow-sm border border-gray-100 hover:shadow-md transition">
+                <span class="flex items-center gap-1 text-gray-600 font-medium"> 💨 Set NH3</span>
+                <span class="font-semibold text-gray-800">High</span>
+              </div>
+
+             
+
+            </div>
+
+            -->
+          </div>
+
+          
+
+        
+
+        <!-- Light Card -->
+        <div class="bg-gradient-to-br from-yellow-500 to-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-5 w-full sm:w-auto mx-auto border border-yellow-100 mb-6">
+
+          <!-- Header -->
+          <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-sm p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+
+            <!-- Left: Icon + Title -->
+            <div class="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3">
+              <div class="p-2.5 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <img src="/images/light.png" alt="Light" class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
+              </div>
+              <h2 class="text-base sm:text-xl font-bold text-gray-800 tracking-wide">
+                LIGHT
+              </h2>
+
+              <!-- Status on small screens -->
+              <span class="light flex sm:hidden items-center px-3 py-1 rounded-full bg-red-500 text-white font-semibold shadow text-sm">
+                OFF
+              </span>
+            </div>
+
+            <!-- Right: Status (hidden on small screens) -->
+            <div class="hidden sm:flex justify-end">
+              <span class="light flex items-center px-4 py-1.5 rounded-full bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+                OFF
+              </span>
+            </div>
+          </div>
+
+          
+        
+        </div>
+
+        <!-- Feed Card -->
+        <div class="bg-gradient-to-br from-amber-500 to-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-5 w-full sm:w-auto mx-auto border border-amber-100 mb-6">
+
+          <!-- Header -->
+          <div class="w-full bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-sm p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+
+            <!-- Left: Icon + Title -->
+            <div class="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3">
+              <div class="p-2.5 bg-amber-100 rounded-xl flex items-center justify-center">
+                <img src="/images/feed.png" alt="Feed" class="h-7 w-7 sm:h-8 sm:w-8 object-contain" />
+              </div>
+              <h2 class="text-base sm:text-xl font-bold text-gray-800 tracking-wide">
+                FEED
+              </h2>
+
+              <!-- Status on small screens -->
+              <span class="feeder flex sm:hidden items-center px-3 py-1 rounded-full bg-red-500 text-white font-semibold shadow text-sm">
+                OFF
+              </span>
+            </div>
+
+            <!-- Right: Status (hidden on small screens) -->
+            <div class="hidden sm:flex justify-end">
+              <span class="feeder flex items-center px-4 py-1.5 rounded-full bg-red-500 text-white font-semibold shadow text-sm sm:text-base">
+                OFF
+              </span>
+            </div>
+          </div>
+
+      
+        </div>
+
+
+          </div>
+          </div>
+          </div>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+    </div>
+
+        `,
+        flock: `<div class="w-full min-h-screen flex justify-center items-start p-6 bg-gray-100">
+                <div class="w-full max-w-6xl bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30">
+
+                  <!-- Header -->
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4 sm:mb-0">
+                      🐥 Flock Data Overview
+                    </h2>
+
+                    
+                  </div>
+
+                  <!-- Grid -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+                    <!-- Growth Day -->
+                    <div class="p-6 rounded-3xl bg-gradient-to-br from-teal-400 to-teal-600 border border-teal-800 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105">
+                      <p class="text-sm font-bold text-white uppercase tracking-wider mb-3">Growth Day</p>
+                      <div class="w-full p-5 rounded-2xl bg-white text-gray-800 font-extrabold text-2xl text-center shadow-inner">
+                        <span class="real_day">++</span>
+                      </div>
+                    </div>
+
+                    <!-- Number of Chicks--> 
+                    <div class="p-6 rounded-3xl bg-gradient-to-br from-green-400 to-green-600 border border-green-900 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105">
+                      <p class="text-sm font-bold text-white uppercase tracking-wider mb-3">No. of Chicks</p>
+                      <div class="w-full p-5 rounded-2xl bg-white text-gray-900 font-extrabold text-2xl text-center shadow-inner">
+                        <span class="flock_size">+++++</span>
+                      </div>
+                    </div>
+
+                    
+                  
+                        
+                        <!-- Flock Report -->
+                        <a href="#">
+                          <div class="p-6 rounded-3xl bg-gradient-to-br from-orange-400 to-orange-600 border border-orange-900 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 flex justify-center items-center">
+                            <p class="text-2xl font-bold text-white uppercase tracking-wider py-2">Flock Report</p>
+                          </div>
+                        </a>
+                  
+                </div>
+              </div>
+
+        <br>
+
+
+              `,
+        graph: `
+       <div style="width: 100%; height: 400px; padding: 10px;">
+        <div id="liveChart"></div>
+      </div>
+
+
+
+      <div class="w-full flex justify-center mt-10 mb-15">
+        <p>CPU Temperature :
+          <span class="pi_temp"></span> °C
+        </p>
+      </div>
+       <br>
+          <br>
+          <br>
+          <br>
+
+
+
+    `
+      };
+
+      // ✅ Show main tab by default
+      mainContent.innerHTML = tabData["main"];
+
+      // 🔁 Handle tab switching
+      tabs.forEach(tab => {
+        tab.addEventListener("change", () => {
+          const tabName = tab.dataset.tab;
+          mainContent.innerHTML = tabData[tabName];
+
+          // ✅ Initialize chart only when 'graph' tab selected
+          if (tabName === "graph") initChart();
+        });
+      });
+
+      
+    let liveChart;
+
+    function initChart() {
+      const chartDiv = document.querySelector("#liveChart");
+      if (!chartDiv) return;
+
+      const options = {
+        chart: {
+          type: "line",
+          height: 400,
+          width: "100%",
+          animations: {
+            enabled: true,
+            easing: "easeinout",
+            dynamicAnimation: { speed: 800 } // smooth wave effect
+          },
+          toolbar: { show: false }
+        },
+        series: [
+          { name: "Avg Temperature (°C)", data: [] },
+          { name: "Humidity (%)", data: [] }
+        ],
+        xaxis: { categories: [] },
+        yaxis: {
+          min: 20,
+          max: 80,
+          title: { text: "Temperature & Humidity" }
+        },
+        stroke: {
+          curve: "smooth", // smooth waveform
+          width: 3
+        },
+        markers: { size: 4 },
+        fill: {
+          type: "gradient",
+          gradient: {
+            shade: "light",
+            type: "vertical",
+            shadeIntensity: 0.4,
+            gradientToColors: ["#EF4444", "#3B82F6"],
+            inverseColors: false,
+            opacityFrom: 0.5,
+            opacityTo: 0.1,
+            stops: [0, 100]
+          }
+        },
+        tooltip: { shared: true }
+      };
+
+      liveChart = new ApexCharts(chartDiv, options);
+      liveChart.render();
+    }
+
+
+document.addEventListener("DOMContentLoaded", initChart);
+
+
+
+
+    </script>
+
+    </script>
+
+
+
+
+  </div>
+
+
+
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+(() => {
+  // Prevent double initialization
+  if (window.__farmSocketInitialized) return;
+  window.__farmSocketInitialized = true;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // ===============================
+    // 🔹 Socket.IO Initialization
+    // ===============================
+    const socket = io("http://192.168.31.133:3000");
+    console.log("🌾 Farm Socket client initialized");
+
+    // ===============================
+    // 🔹 DOM Elements
+    // ===============================
+    const farmButtons = document.querySelectorAll(".farm-btn");
+    let activeThingId = null;
+
+    // ===============================
+    // 🔹 Data & State Variables
+    // ===============================
+    let dataTimeout = null;
+
+    // Sensor readings
+    let avg_temp = "++";
+    let temps = { TEMP_1: "++", TEMP_2: "++", TEMP_3: "++", TEMP_4: "++", TEMP_5: "++" };
+    let humidity = "++";
+    let gas = { gas1: "++", gas2: "++" };
+
+    // Device states
+    let heater = "++", coolpad = "++", tunnel = "++", cross_vent = "++";
+    let fogger = "++", feeder = "++", light = "++";
+
+    // Fan & automation settings
+    let fans = {};
+    let auto_fan_mode = "++";
+    let minimum_ventilation = "++";
+    let fan_temp_settings = {};
+
+    // Alarm states
+    let alarms_triggered = [];
+
+    // Alarm Setpoint 
+    let high_temp_alarm="++";
+    let low_temp_alarm="++";
+    let low_hum_alarm="++";
+    let high_hum_alarm="++";
+   
+
+    // ===============================
+    // 🔹 Utility Functions
+    // ===============================
+
+    // Update all elements of a class with a value
+    function setTextByClass(cls, value) {
+      document.querySelectorAll(`.${cls}`).forEach(el => {
+        el.textContent = value ?? "++";
+      });
+    }
+
+    // Update device ON/OFF states
+    function updateDeviceStates(deviceStates) {
+      Object.entries(deviceStates).forEach(([key, value]) => {
+        document.querySelectorAll(`.${key}`).forEach(el => {
+          const isOn = (value == 1 || value === "1" || value === true || value === "ON");
+          el.textContent = isOn ? "ON" : "OFF";
+          el.classList.remove("bg-red-500", "bg-green-500");
+          el.classList.add(isOn ? "bg-green-500" : "bg-red-500");
+        });
+      });
+    }
+
+
+    // Update fan colors (0=OFF/gray, 1=ON/green, 2=Min Vent/yellow)
+    function updateFanStates(fansData) {
+      Object.entries(fansData).forEach(([key, value]) => {
+        document.querySelectorAll(`.${key.toLowerCase()}`).forEach(el => {
+          el.classList.remove("bg-gray-500", "bg-green-500", "bg-yellow-400", "bg-gray-300");
+
+          if (value == 0) el.classList.add("bg-gray-200");
+          else if (value == 1) el.classList.add("bg-green-500");
+          else if (value == 2) el.classList.add("bg-yellow-400");
+          else el.classList.add("bg-gray-300"); // Unknown
+        });
+      });
+    }
+
+    // Update alarms
+    function updateAlarms(alarmArray) {
+      // Individual alarms
+      document.querySelectorAll(".alarm").forEach(el => {
+        const label = el.dataset.label;
+        const isActive = alarmArray.includes(label);
+        el.textContent = isActive ? "ON" : "OFF";
+        el.classList.remove("bg-red-500", "bg-green-500");
+        el.classList.add(isActive ? "bg-green-500" : "bg-red-500");
+      });
+
+      // Overall alarm
+      const overallEl = document.querySelector(".overall_alarm");
+      if (overallEl) {
+        const overallStatus = alarmArray.length > 0 ? "ON" : "OFF";
+        overallEl.textContent = overallStatus;
+        overallEl.classList.remove("bg-red-500", "bg-green-500");
+        overallEl.classList.add(overallStatus === "ON" ? "bg-green-500" : "bg-red-500");
+      }
+    }
+
+    // Reset all values to default
+    function resetAllValues() {
+      avg_temp = "++";
+      temps = { TEMP_1: "++", TEMP_2: "++", TEMP_3: "++", TEMP_4: "++", TEMP_5: "++" };
+      humidity = "++";
+      gas = { gas1: "++", gas2: "++" };
+      heater = coolpad = tunnel = cross_vent = fogger = feeder = light = "++";
+      auto_fan_mode = minimum_ventilation = "++";
+      fan_temp_settings = {};
+      alarms_triggered = [];
+
+
+      updateUI();
+      console.warn("⚠️ Values reset — waiting for new data...");
+    }
+
+    // ===============================
+    // 🔹 UI Update Function
+    // ===============================
+    function updateUI() {
+      // Sensor values
+      setTextByClass("avg_temp", avg_temp);
+      Object.entries(temps).forEach(([key, val]) => setTextByClass(key, val));
+      setTextByClass("humidity", humidity);
+      setTextByClass("gas1", gas.gas1);
+      setTextByClass("gas2", gas.gas2);
+      setTextByClass("auto_fan_mode", auto_fan_mode);
+      setTextByClass("min_vent", minimum_ventilation);
+      // setTextByClass("heater_set_point",heater_set_point);
+    
+
+      // Device states
+      updateDeviceStates({ heater, coolpad, tunnel, cross_vent, fogger, feeder, light });
+
+      // Alarms
+      updateAlarms(alarms_triggered);
+
+      // Fan mode label
+      document.querySelectorAll(".fan_mode").forEach(el => {
+        el.textContent = auto_fan_mode;
+        el.classList.remove("bg-blue-500", "bg-gray-500");
+        el.classList.add(auto_fan_mode === "AUTO" ? "bg-blue-500" : "bg-gray-500");
+      });
+
+      // Required temperature display
+      const requiredTemp =
+        auto_fan_mode === "AUTO"
+          ? fan_temp_settings.FAN_1_TEMP_AUTO_setValue
+          : fan_temp_settings.FAN_1_TEMP_setValue;
+      setTextByClass("required_temp", requiredTemp ?? "++");
+
+      setTextByClass("high_temp_alarm", high_temp_alarm);
+      setTextByClass("low_temp_alarm",  low_temp_alarm);
+      setTextByClass("high_hum_alarm", high_hum_alarm);
+      setTextByClass("low_hum_alarm", low_hum_alarm);
+
+      
+
+
+
+
+      // Fan AUTO/MANUAL temps
+      for (let i = 1; i <= 6; i++) {
+        const autoKey = `FAN_${i}_TEMP_AUTO_setValue`;
+        const manualKey = `FAN_${i}_TEMP_setValue`;
+        const autoElem = document.querySelector(`.fan_auto_temp${i}`);
+        const manualElem = document.querySelector(`.fan_manual_temp${i}`);
+
+        if (autoElem && manualElem) {
+          autoElem.textContent = fan_temp_settings[autoKey] ?? "++";
+          manualElem.textContent = fan_temp_settings[manualKey] ?? "++";
+
+          if (auto_fan_mode === "AUTO") {
+            autoElem.style.display = "inline";
+            manualElem.style.display = "none";
+          } else if (auto_fan_mode === "MANUAL") {
+            autoElem.style.display = "none";
+            manualElem.style.display = "inline";
+          } else {
+            autoElem.style.display = manualElem.style.display = "inline";
+          }
+        }
+      }
+
+      // Fan state colors
+      if (fans && Object.keys(fans).length > 0) updateFanStates(fans);
+    }
+
+    // ===============================
+    // 🔹 Button Helpers
+    // ===============================
+
+    // Highlight active farm button
+    function highlightActiveButton(btn) {
+      farmButtons.forEach(b => b.classList.remove("ring-4", "ring-offset-2", "ring-white", "scale-105"));
+      btn.classList.add("ring-4", "ring-offset-2", "ring-white", "scale-105");
+    }
+
+    // Join a specific farm room
+    function joinRoom(thingId) {
+      if (activeThingId && activeThingId !== thingId) {
+        socket.emit("leave_room", activeThingId);
+        console.log(`🚪 Left room: ${activeThingId}`);
+      }
+
+      activeThingId = thingId;
+      resetAllValues();
+      socket.emit("join_room", thingId);
+      console.log(`🏠 Joined room: ${thingId}`);
+
+      clearTimeout(dataTimeout);
+      dataTimeout = setTimeout(() => {
+        console.warn(`⛔ No data received from Thing ID ${thingId}`);
+        resetAllValues();
+      }, 10000);
+    }
+
+    // ===============================
+    // 🔹 Socket Event Handlers
+    // ===============================
+
+ // Incoming controller data
+socket.on("controller_data", (packet) => {
+  if (packet.thingId !== activeThingId) return;
+
+  clearTimeout(dataTimeout);
+  const v = packet.values;
+  console.log(`✅ Data received from ${packet.thingId}`, v);
+
+  avg_temp = v.avg_temp ?? "++";
+  temps = v.temps ?? temps;
+  humidity = v.humidity ?? "++";
+
+  
+  // Numeric values for graph
+  const avgTempNum = parseFloat(v.avg_temp);
+  const humidityNum = parseFloat(v.humidity);
+
+  gas = v.gas ?? gas;
+  fans = v.fans ?? fans;
+
+  heater = v.heater ?? "++";
+  coolpad = v.coolpad ?? "++";
+  tunnel = v.tunnel ?? "++";
+  cross_vent = v.cross_vent ?? "++";
+  fogger = v.fogger ?? "++";
+  feeder = v.feeder ?? "++";
+  light = v.light ?? "++";
+
+  auto_fan_mode = v.auto_fan_mode ?? "++";
+  minimum_ventilation = v.minimum_ventilation ?? "++";
+  fan_temp_settings = v.fan_temp_settings ?? {};
+  alarms_triggered = v.alarms_triggered ?? [];
+
+  high_temp_alarm = v?.alarm_setpoints.high_temp;
+  low_temp_alarm  = v?.alarm_setpoints.low_temp;
+  high_hum_alarm  = v?.alarm_setpoints.high_hum;
+  low_hum_alarm   = v?.alarm_setpoints.low_hum;
+
+  heater_set_point= v?.heater_set_point ?? "++";
+
+  flock_size= v?.flock_size ?? "++";
+  real_day= v?.real_day ?? "++";
+
+  pi_temp = v?.pi_temp ?? "++";
+
+  // -----------------------------
+  // Access daily_stats_array
+  // -----------------------------
+  const dailyStats = v.daily_stats_array || [];
+
+ if (dailyStats.length && liveChart) {
+    // Convert strings to numbers
+    const avgTempSeries = dailyStats.map(item => parseFloat(item.avg_temp) || 0);
+    const humiditySeries = dailyStats.map(item => parseFloat(item.humidity) || 0);
+    const categories = dailyStats.map(item => item.date);
+
+    liveChart.updateSeries([
+      { name: "Avg Temperature (°C)", data: avgTempSeries },
+      { name: "Humidity (%)", data: humiditySeries }
+    ]);
+
+    liveChart.updateOptions({
+      xaxis: { categories }
+    }, false, false);
+  }
+
+  
+
+
+
+
+ 
+  
+  setTextByClass("heater_set_point",heater_set_point)
+  setTextByClass("flock_size",flock_size)
+  setTextByClass("real_day",real_day)
+  setTextByClass("pi_temp",pi_temp)
+
+
+
+
+    
+
+  // ====================
+  // 🔹 Fan Running Percentage (6 fans)
+  // ====================
+  const totalFans = 6;
+  let onFans = 0;
+
+  Object.entries(fans).forEach(([key, val]) => {
+    if (val == 1) onFans++;
+  });
+
+  let fan_percentage = ((onFans / totalFans) * 100).toFixed(2);
+
+  // ====================
+  // 🔹 Minimum & Maximum Vent Display Logic
+  // ====================
+  const isMinVentActive = (minimum_ventilation === "ON");
+
+  if (isMinVentActive) {
+    setTextByClass("min_vent_percent", fan_percentage + "%");
+    setTextByClass("max_vent_percent", "0%");
+  } else {
+    setTextByClass("min_vent_percent", "0%");
+    setTextByClass("max_vent_percent", fan_percentage + "%");
+  }
+
+  // ====================
+  // 🔹 Fan Rotation Logic
+  // ====================
+  const minFanIcon = document.getElementById("minVentFan");
+  const maxFanIcon = document.getElementById("maxVentFan");
+
+  function setFanSpeed(fanIcon, percentage) {
+    if (!fanIcon) return;
+    if (percentage <= 0) {
+      fanIcon.style.animation = "none"; 
+    } else {
+      let speed = 5 - (percentage / 100) * 4.5; 
+      fanIcon.style.animation = `rotateFan ${speed}s linear infinite`;
+    }
+  }
+
+  setFanSpeed(minFanIcon, isMinVentActive ? fan_percentage : 0);
+  setFanSpeed(maxFanIcon, !isMinVentActive ? fan_percentage : 0);
+
+  updateUI();
+});
+
+    // Handle socket disconnection
+    socket.on("disconnect", () => {
+      console.error("❌ Socket disconnected from server");
+      resetAllValues();
+    });
+
+    // ===============================
+    // 🔹 Button Event Listeners
+    // ===============================
+    farmButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const thingId = btn.dataset.thingid;
+        highlightActiveButton(btn);
+        joinRoom(thingId);
+      });
+    });
+
+    // Auto join first farm button
+    if (farmButtons.length > 0) {
+      const firstBtn = farmButtons[0];
+      highlightActiveButton(firstBtn);
+      joinRoom(firstBtn.dataset.thingid);
+    }
+
+  }); // DOMContentLoaded
+})();
+</script>
+
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thing <%= thingId %> Live Dashboard</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background: #f9f9f9;
+      border-left: 6px solid #4CAF50;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    pre {
+      background: #1e1e2f;
+      color: #e0e0e0;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .status span {
+      font-weight: bold;
+    }
+
+    .connected { color: green; }
+    .disconnected { color: red; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Live Dashboard - Thing ID: <%= thingId %></h1>
+    <div class="info-box">📡 Waiting for data from controller...</div>
+    <pre id="output">Waiting for data...</pre>
+    <div class="status">Connection Status: <span id="status" class="disconnected">Disconnected</span></div>
+  </div>
+
+  <script>
+    const socket = io("http://192.168.31.133:3000");
+    const THING_ID = "<%= thingId %>";
+    const statusEl = document.getElementById("status");
+    const outputEl = document.getElementById("output");
+    const infoBox = document.querySelector(".info-box");
+
+    socket.emit("join_room", THING_ID);
+
+    socket.on("controller_data", (data) => {
+      if (data.thingId === THING_ID) {
+        infoBox.textContent = "✅ Data received from Thing ID " + THING_ID;
+        outputEl.textContent = JSON.stringify(data, null, 4);
+      }
+    });
+
+    socket.on("connect", () => {
+      console.log("✅ Connected to server");
+      statusEl.textContent = "Connected";
+      statusEl.className = "connected";
+    });
+
+    socket.on("disconnect", () => {
+      console.log("❌ Disconnected from server");
+      statusEl.textContent = "Disconnected";
+      statusEl.className = "disconnected";
+    });
+  </script>
+</body>
+</html>

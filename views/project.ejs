@@ -1,0 +1,99 @@
+<%- include('./template/header.ejs') %>
+
+  <div class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <!-- Buttons -->
+    <div class="flex gap-4 mb-6">
+      <a href="/project/create_project" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">
+        Create Project
+      </a>
+      <a href="/project/create_thing" class="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700">
+        Create Thing
+      </a>
+      <a href="/project/thing_list" class="bg-purple-600 text-white px-4 py-2 rounded-lg shadow hover:bg-purple-700">
+        Thing List
+      </a>
+      <a href="/project/thing_lock" class="bg-teal-600 text-white px-4 py-2 rounded-lg shadow hover:bg-teal-700">
+        Thing Lock/Unlock
+      </a>
+    
+    </div>
+
+    <!-- Search Bar -->
+    <div class="w-full max-w-4xl mb-4">
+      <input id="searchInput" type="text" placeholder="Search Project..."
+        class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+    </div>
+
+    <!-- Project List -->
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-md overflow-hidden">
+      <table class="w-full text-left border-collapse" id="projectTable">
+        <thead class="bg-gray-200 text-gray-700">
+          <tr>
+            <th class="px-4 py-3">Sl. No</th>
+            <th class="px-4 py-3">Project Name</th>
+            <th class="px-8 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% projects.forEach((name, index)=> { %>
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <%= index + 1 %>
+              </td>
+              <td class="px-4 py-3">
+                <%= name %>
+              </td>
+              <td class="px-4 py-3 flex gap-2">
+                <a href="/project/delete/<%= name %>"
+                  class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Delete</a>
+                <a href="/project/use/<%= name %>" class="<%= (activeProject === name) 
+              ? 'border border-green-500 bg-green-500 text-white px-3 py-1 rounded-md' 
+              : 'border border-red-500 bg-white text-red-500 px-3 py-1 rounded-md hover:bg-red-100' %>">
+                  USE
+                </a>
+
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <!-- Script for Search -->
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const table = document.getElementById("projectTable").getElementsByTagName("tbody")[0];
+
+    searchInput.addEventListener("keyup", function () {
+      const filter = searchInput.value.toLowerCase();
+      const rows = table.getElementsByTagName("tr");
+
+      for (let i = 0; i < rows.length; i++) {
+        const groupName = rows[i].getElementsByTagName("td")[1];
+        if (groupName) {
+          const textValue = groupName.textContent || groupName.innerText;
+          rows[i].style.display = textValue.toLowerCase().includes(filter) ? "" : "none";
+        }
+      }
+    });
+
+
+    document.querySelectorAll('.use-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault(); // stop navigation first
+
+        // Toggle active style
+        btn.classList.remove("bg-white", "text-red-500", "border-red-500", "hover:bg-red-100");
+        btn.classList.add("bg-green-500", "text-white", "border-green-500");
+
+        // After styling, continue to the link
+        window.location.href = btn.getAttribute("href");
+      });
+    });
+  </script>
+
+
+  <%- include('./template/footer.ejs') %>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+<div class="min-h-screen flex items-center justify-center bg-cover bg-center relative overflow-hidden p-4"
+     style="background-image: url('https://easyagrotech.com/wp-content/uploads/2024/01/egfactory.webp');">
+
+  <!-- Floating abstract shapes -->
+  <span class="absolute w-32 h-32 bg-white/10 rounded-full top-12 left-8 animate-bounce-slow"></span>
+  <span class="absolute w-48 h-48 bg-white/5 rounded-full bottom-16 right-10 animate-spin-slow"></span>
+  <span class="absolute w-24 h-24 bg-white/20 rounded-full top-1/2 left-1/4 animate-ping-slow"></span>
+
+  <!-- Profile Card -->
+  <div class="bg-white/20 backdrop-blur-lg shadow-xl rounded-3xl w-full max-w-sm p-8 flex flex-col items-center relative z-10 border border-white/30">
+    
+    <!-- Avatar with hover effect -->
+    <div class="w-28 h-28 rounded-full overflow-hidden mb-6 shadow-lg transform transition-transform duration-500 hover:scale-110">
+      <img src="https://i.pravatar.cc/150?img=32" alt="User Avatar" class="w-full h-full object-cover">
+    </div>
+
+    <!-- Username -->
+    <div class="w-full mb-4 text-center">
+      <p class="text-gray-200 font-medium text-sm">Username</p>
+      <p class="text-white font-bold text-2xl">JohnDoe</p>
+    </div>
+
+    <!-- Password -->
+    <div class="w-full mb-6 text-center">
+      <p class="text-gray-200 font-medium text-sm">Password</p>
+      <p class="text-white font-bold text-xl tracking-widest">••••••••</p>
+    </div>
+
+    <!-- Logout Button -->
+    <a href="/user_auth" class="w-full text-center bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all duration-300">
+      Logout
+    </a>
+
+  </div>
+
+  <!-- Custom Animations -->
+  <style>
+    @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .animate-spin-slow { animation: spin-slow 30s linear infinite; }
+
+    @keyframes bounce-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    .animate-bounce-slow { animation: bounce-slow 6s ease-in-out infinite; }
+
+    @keyframes ping-slow { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 0.2; } }
+    .animate-ping-slow { animation: ping-slow 8s infinite; }
+  </style>
+
+</div>
+
+
+
+
+<div
+      class="fixed bottom-0 w-full flex justify-around bg-white/95 backdrop-blur-md border-t shadow-lg py-2 sm:py-3 z-50">
+
+      <!-- Dashboard -->
+      <a href="/app_data" id="btn-dashboard"
+        class="flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 transition-all duration-300 rounded-lg sm:gap-2 sm:py-4">
+        <svg id="icon-dashboard" class="w-6 h-6 sm:w-7 sm:h-7 text-gray-600 transition-colors duration-300"
+          fill="currentColor" viewBox="0 0 24 24">
+          <path d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75h-5.25v-6.75H9v6.75H3.75A.75.75 0 013 21V9.75z" />
+        </svg>
+        <span id="text-dashboard"
+          class="text-xs sm:text-sm font-semibold text-gray-600 transition-colors duration-300">Dashboard</span>
+      </a>
+
+      <!-- Profile -->
+      <a href="/app_data/profile" id="btn-profile"
+        class="flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 transition-all duration-300 rounded-lg sm:gap-2 sm:py-4">
+        <svg id="icon-profile" class="w-6 h-6 sm:w-7 sm:h-7 text-red-600 transition-colors duration-300"
+          fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd"
+            d="M12 12c2.7 0 4.875-2.175 4.875-4.875S14.7 2.25 12 2.25 7.125 4.425 7.125 7.125 9.3 12 12 12zm0 1.5c-3.15 0-9.375 1.575-9.375 4.725V21h18.75v-2.775c0-3.15-6.225-4.725-9.375-4.725z"
+            clip-rule="evenodd" />
+        </svg>
+        <span id="text-profile"
+          class="text-xs sm:text-sm font-semibold text-red-600 transition-colors duration-300">Profile</span>
+      </a>
+
+    </div>
+
+    
+     
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Login | Easy Agrotech</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-green-400 via-lime-200 to-emerald-300 overflow-hidden">
+
+  <!-- ✨ Animated Background Shapes -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute top-10 left-10 h-80 w-80 bg-green-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float-slow"></div>
+    <div class="absolute top-1/2 right-0 h-96 w-96 bg-lime-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float-rev"></div>
+    <div class="absolute bottom-0 left-1/3 h-72 w-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-float"></div>
+  </div>
+
+  <!-- 🌿 Floating Decorative Lines -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-green-400/30 to-transparent animate-flow"></div>
+    <div class="absolute top-0 left-2/4 w-px h-full bg-gradient-to-b from-transparent via-lime-400/30 to-transparent animate-flow-delayed"></div>
+  </div>
+
+  <!-- 🌾 Glassmorphic Login Card -->
+  <div
+    class="relative w-full max-w-md p-10 rounded-3xl border border-white/30 bg-white/20 backdrop-blur-2xl shadow-[0_0_50px_rgba(0,0,0,0.2)] transition-all duration-700 hover:scale-[1.03] hover:shadow-[0_0_80px_rgba(72,187,120,0.5)] animate-fade-in">
+
+    <!-- Glowing Border -->
+    <div class="absolute inset-0 rounded-3xl border border-green-400/40 shadow-[0_0_60px_rgba(72,187,120,0.3)] pointer-events-none"></div>
+
+    <!-- 🌱 Logo -->
+    <div class="flex flex-col items-center mb-6">
+      <div class="relative">
+        <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-green-300 via-lime-400 to-green-500 blur-lg opacity-70 animate-pulse-slow"></div>
+        <div class="relative h-24 w-24 rounded-full bg-gradient-to-tr from-green-400 to-lime-400 shadow-xl flex items-center justify-center">
+          <img src="/images/logo.png" alt="Easy Agrotech Logo" class="h-20 w-20 rounded-full object-contain" />
+        </div>
+      </div>
+      <h1 class="text-4xl font-extrabold text-gray-900 mt-5 drop-shadow-sm">Easy Agrotech</h1>
+      <p class="text-gray-700 text-sm md:text-base mt-1">Smart Farming. Simplified 🐣</p>
+    </div>
+
+    <!-- ⚡ Login Form -->
+    <form action="/user_auth" method="POST" class="space-y-6">
+      <% if (typeof error !== 'undefined' && error) { %>
+      <div class="text-red-600 text-center font-semibold mb-2 bg-red-50 border border-red-200 p-2 rounded-lg shadow-sm">
+        <%= error %>
+      </div>
+      <% } %>
+
+      <!-- Username -->
+      <div class="relative">
+        <input type="text" name="username" placeholder="Username" required
+          class="w-full rounded-xl border border-gray-300 bg-white/70 px-4 py-3 text-gray-900 shadow-inner transition-all duration-200 focus:border-green-400 focus:ring-2 focus:ring-green-300 focus:ring-offset-1 outline-none placeholder-gray-500 hover:shadow-md" />
+      </div>
+
+      <!-- Password -->
+      <div class="relative">
+        <input id="password" type="password" name="password" placeholder="Password" required
+          class="w-full rounded-xl border border-gray-300 bg-white/70 px-4 py-3 pr-10 text-gray-900 shadow-inner transition-all duration-200 focus:border-green-400 focus:ring-2 focus:ring-green-300 focus:ring-offset-1 outline-none placeholder-gray-500 hover:shadow-md" />
+        <button type="button" id="togglePassword"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-600 transition">
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5
+                 c4.477 0 8.268 2.943 9.542 7
+                 -1.274 4.057-5.065 7-9.542 7
+                 -4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Button -->
+      <button type="submit"
+        class="relative w-full rounded-xl py-3 font-semibold text-white shadow-lg bg-gradient-to-r from-green-400 via-lime-400 to-green-500 transition-all duration-500 ease-in-out hover:scale-[1.04] hover:from-lime-400 hover:via-green-500 hover:to-lime-400 focus:ring-4 focus:ring-green-300 focus:outline-none overflow-hidden">
+        <span class="absolute inset-0 bg-white/20 blur-md opacity-40 animate-gradient"></span>
+        <span class="relative z-10">Login</span>
+      </button>
+
+      <!-- Link -->
+    </form>
+  </div>
+
+  <!-- 🌈 Animations -->
+  <style>
+    @keyframes fade-in {
+      0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-fade-in { animation: fade-in 1s ease forwards; }
+
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+    .animate-pulse-slow { animation: pulse-slow 5s infinite ease-in-out; }
+
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-bounce-slow { animation: bounce-slow 3s infinite ease-in-out; }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animate-gradient {
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+    .animate-float { animation: float 8s ease-in-out infinite; }
+    .animate-float-rev { animation: float 10s ease-in-out infinite reverse; }
+    .animate-float-slow { animation: float 12s ease-in-out infinite; }
+
+    @keyframes flow {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(100%); opacity: 0; }
+    }
+    .animate-flow {
+      animation: flow 6s linear infinite;
+    }
+    .animate-flow-delayed {
+      animation: flow 7s linear infinite 3s;
+    }
+  </style>
+
+  <!-- 👁 Password Toggle -->
+  <script>
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    togglePassword.addEventListener('click', () => {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      eyeIcon.innerHTML = type === 'password'
+        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5
+                 c4.477 0 8.268 2.943 9.542 7
+                 -1.274 4.057-5.065 7-9.542 7
+                 -4.477 0-8.268-2.943-9.542-7z" />`
+        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.875 18.825A10.05 10.05 0 0112 19
+                 c-4.477 0-8.268-2.943-9.542-7
+                 a10.056 10.056 0 012.92-4.22
+                 m2.52-1.425A9.959 9.959 0 0112 5
+                 c4.477 0 8.268 2.943 9.542 7
+                 a9.958 9.958 0 01-1.21 2.34M15 12
+                 a3 3 0 11-6 0 3 3 0 016 0z" />`;
+    });
+  </script>
+
+</body>
+</html>

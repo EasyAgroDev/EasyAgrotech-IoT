@@ -1,0 +1,108 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+var app = require('../app');
+var debug = require('debug')('iot-easyagrotech:server');
+var http = require('http');
+const { Server } = require('socket.io');
+
+/**
+ * Get port and create server
+ */
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+var server = http.createServer(app);
+
+/**
+ * ✅ Attach Socket.IO to same Express server
+ */
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  },
+});
+
+app.set('io', io); // make io accessible in routes if needed
+
+/**
+ * ✅ Socket.IO Events
+ */
+io.on("connection", (socket) => {
+  console.log("✅ Client connected");
+
+  // Track which room this socket is in
+  socket.currentRoom = null;
+
+  socket.on("join_room", (roomId) => {
+    // Leave previous room if any
+    if (socket.currentRoom) {
+      socket.leave(socket.currentRoom);
+      console.log(`🚪 Socket ${socket.id} left room: ${socket.currentRoom}`);
+    }
+
+    // Join new room
+    socket.join(roomId);
+    socket.currentRoom = roomId;
+    console.log(`🏠 Socket ${socket.id} joined room: ${roomId}`);
+  });
+
+  socket.on("leave_room", (roomId) => {
+    socket.leave(roomId);
+    if (socket.currentRoom === roomId) socket.currentRoom = null;
+    console.log(`🚪 Socket ${socket.id} left room manually: ${roomId}`);
+  });
+
+  socket.on("controller_data", (packet) => {
+    const { thingId, values } = packet;
+    // Debug log for server monitoring
+    console.log(`📡 Data from ${thingId}:`, values);
+
+    // Emit to that room only
+    io.to(thingId).emit("controller_data", packet);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`❌ Client disconnected: ${socket.id}`);
+  });
+});
+
+/**
+ * Start server
+ */
+server.listen(port, '0.0.0.0', () => {
+ console.log(`🚀 Server running on port ${port}`);
+
+});
+server.on('error', onError);
+server.on('listening', onListening);
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
+  return false;
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+    default:
+      throw error;
+  }
+}
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

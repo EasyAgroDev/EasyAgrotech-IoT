@@ -1,0 +1,42 @@
+ </main>
+
+  <!-- Scripts -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Active link
+      const links = document.querySelectorAll(".sidebar-link");
+      const currentPath = window.location.pathname;
+      links.forEach(link => {
+        if (link.getAttribute("href") === currentPath) {
+          link.classList.add("bg-green-500");
+        } else {
+          link.classList.add("bg-gray-700", "hover:bg-gray-600");
+        }
+      });
+
+      // Sidebar toggle
+      const menuBtn = document.getElementById("menuBtn");
+      const sidebar = document.getElementById("sidebar");
+      menuBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("-translate-x-full");
+      });
+
+      // Avatar dropdown toggle
+      const avatarBtn = document.getElementById("avatarBtn");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+
+      avatarBtn.addEventListener("click", () => {
+        dropdownMenu.classList.toggle("hidden");
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!avatarBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.classList.add("hidden");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

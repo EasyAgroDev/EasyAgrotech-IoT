@@ -1,0 +1,84 @@
+<%- include('./template/header.ejs') %>
+  <div class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <!-- Page Header -->
+    <h1 class="text-3xl font-bold text-indigo-600 mb-6">📝 Thing List</h1>
+
+    <!-- Search Bar -->
+    <div class="w-full max-w-4xl mb-4">
+      <input id="searchThingInput" type="text" placeholder="Search Thing..."
+        class="w-full px-4 py-2 border rounded-lg shadow-sm foc us:outline-none focus:ring-2 focus:ring-indigo-400">
+    </div>
+
+    <!-- Thing List Table -->
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-md overflow-hidden">
+      <table class="w-full text-left border-collapse" id="thingTable">
+        <thead class="bg-gray-200 text-gray-700">
+          <tr>
+            <th class="px-4 py-3">Sl. No</th>
+            <th class="px-4 py-3">Thing Name</th>
+            <th class="px-4 py-3">Thing ID</th>
+            <th class="px-4 py-3">Group Name</th>
+            <th class="px-8 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (things.length===0) { %>
+            <tr>
+              <td colspan="4" class="px-4 py-3 text-center text-gray-500">No Things found</td>
+            </tr>
+            <% } else { %>
+              <% things.forEach((thing, index)=> { %>
+                <tr class="border-b hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <%= index + 1 %>
+                  </td>
+                  <td class="px-4 py-3">
+                    <%= thing.name %>
+                  </td>
+                  <td class="px-4 py-3">
+                    <%= thing.thingId %>
+                  </td>
+                  <td class="px-4 py-3">
+                    <%= thing.groupName %>
+                  </td>
+                  <td class="px-4 py-3 flex gap-2">
+                    <a href="/project/thing_list/<%= thing.thingId %>"
+                      onclick="return confirm('Are you sure you want to delete this Thing?');"
+                      class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
+                      Delete
+                    </a>
+
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } %>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <!-- Search Script -->
+  <script>
+    const searchThingInput = document.getElementById("searchThingInput");
+    const thingTable = document.getElementById("thingTable").getElementsByTagName("tbody")[0];
+
+    searchThingInput.addEventListener("keyup", function () {
+      const filter = searchThingInput.value.toLowerCase();
+      const rows = thingTable.getElementsByTagName("tr");
+
+      for (let i = 0; i < rows.length; i++) {
+        const thingName = rows[i].getElementsByTagName("td")[1];
+        const groupName = rows[i].getElementsByTagName("td")[2];
+        if (thingName && groupName) {
+          const textValue = thingName.textContent + " " + groupName.textContent;
+          rows[i].style.display = textValue.toLowerCase().includes(filter) ? "" : "none";
+        }
+      }
+    });
+  </script>
+
+
+
+  <%- include('./template/footer.ejs') %>

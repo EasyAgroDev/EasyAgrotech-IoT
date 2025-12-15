@@ -1,0 +1,56 @@
+<%- include('./template/header.ejs') %>
+
+<div class="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 py-12 px-4">
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl p-8 sm:p-12">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Thing Lock Management</h1>
+
+        <!-- Search Bar -->
+        <div class="mb-6">
+            <input 
+                type="text" 
+                id="searchGroup" 
+                placeholder="Search by group..." 
+                class="w-full border-2 border-gray-300 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+            />
+        </div>
+
+        <% if (things.length === 0) { %>
+            <p class="text-gray-500">No things found in this project.</p>
+        <% } else { %>
+            <div id="thingsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <% things.forEach(thing => { %>
+                    <div class="thing-card p-4 rounded-2xl shadow-lg bg-gradient-to-br from-indigo-50 to-purple-50 hover:scale-105 transform transition" data-group="<%= thing.groupName.toLowerCase() %>">
+                        <h2 class="text-lg font-semibold text-gray-700"><%= thing.name %></h2>
+                        <p class="text-sm text-gray-500">Thing ID: <%= thing.thingId %></p>
+                        <p class="text-sm text-gray-500">Group: <%= thing.groupName %></p>
+                        <div class="mt-4">
+                            <form action="/project/thing_lock_action/<%= thing.thingId %>" method="POST">
+                                <button type="submit"
+                                    class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Lock</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById('searchGroup');
+    const thingCards = document.querySelectorAll('.thing-card');
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        thingCards.forEach(card => {
+            const group = card.getAttribute('data-group');
+            if(group.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<%- include('./template/footer.ejs') %>

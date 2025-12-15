@@ -1,0 +1,77 @@
+<%- include('./template/header.ejs') %>
+
+  <body class="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-6">
+    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl p-8 md:p-10">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800">🧩 Group Management</h1>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="flex justify-between items-center mb-6">
+        <input type="text" id="searchInput" placeholder="🔍 Search by name or group..."
+          class="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" />
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table id="userTable" class="w-full border-collapse bg-white rounded-xl overflow-hidden shadow text-sm">
+          <thead>
+            <tr class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white text-left">
+              <th class="px-4 py-3">Sl No.</th>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">Group Name</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <% if (users.length===0) { %>
+              <tr>
+                <td colspan="10" class="text-center py-6 text-gray-500">
+                  No users found in <%= projectName %> project.
+                </td>
+              </tr>
+              <% } else { %>
+                <% users.forEach((user, index)=> { %>
+                  <tr class="border-b hover:bg-gray-50 transition">
+                    <td class="px-4 py-3">
+                      <%= index + 1 %>
+                    </td>
+                    <td class="px-4 py-3 font-medium">
+                      <%= user.name %>
+                    </td>
+                    <td class="px-4 py-3">
+                      <% if (user.groups && user.groups.length> 0) { %>
+                        <%= user.groups.map(g=> g.name).join(", ") %>
+                          <% } else { %>
+                            <em>—</em>
+                            <% } %>
+                    </td>
+                  </tr>
+                  <% }) %>
+                    <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      // 🔍 Live Search Function
+      document.getElementById("searchInput").addEventListener("keyup", function () {
+        const searchValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll("#userTable tbody tr");
+
+        rows.forEach(row => {
+          const name = row.children[1]?.textContent.toLowerCase() || "";
+          const group = row.children[2]?.textContent.toLowerCase() || "";
+
+          if (name.includes(searchValue) || group.includes(searchValue)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+
+  <%- include('./template/footer.ejs') %>
