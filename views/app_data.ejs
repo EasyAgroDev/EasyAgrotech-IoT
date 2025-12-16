@@ -1289,7 +1289,10 @@ document.addEventListener("DOMContentLoaded", initChart);
     // ===============================
     // 🔹 Socket.IO Initialization
     // ===============================
-    const socket = io("http://72.61.239.204:3000");
+    const socket = io("/", {
+    transports: ["websocket", "polling"]
+});
+
     console.log("🌾 Farm Socket client initialized");
 
     // ===============================
