@@ -1380,16 +1380,14 @@ document.addEventListener("DOMContentLoaded", initChart);
         el.classList.add(isActive ? "bg-green-500" : "bg-red-500");
       });
 
-     // Overall alarm (BACKEND AUTHORITATIVE)
+      // Overall alarm
       const overallEl = document.querySelector(".overall_alarm");
       if (overallEl) {
-        overallEl.textContent = overall_alarm;
+        const overallStatus = alarmArray.length > 0 ? "ON" : "OFF";
+        overallEl.textContent = overallStatus;
         overallEl.classList.remove("bg-red-500", "bg-green-500");
-        overallEl.classList.add(
-          overall_alarm === "ON" ? "bg-green-500" : "bg-red-500"
-        );
+        overallEl.classList.add(overallStatus === "ON" ? "bg-green-500" : "bg-red-500");
       }
-
     }
 
     // Reset all values to default
@@ -1540,15 +1538,11 @@ socket.on("controller_data", (packet) => {
   fogger = v.fogger ?? "++";
   feeder = v.feeder ?? "++";
   light = v.light ?? "++";
-  overall_alarm = v.overall_alarm??"++";
-
 
   auto_fan_mode = v.auto_fan_mode ?? "++";
   minimum_ventilation = v.minimum_ventilation ?? "++";
   fan_temp_settings = v.fan_temp_settings ?? {};
   alarms_triggered = v.alarms_triggered ?? [];
-
-  
 
   high_temp_alarm = v?.alarm_setpoints.high_temp;
   low_temp_alarm  = v?.alarm_setpoints.low_temp;
