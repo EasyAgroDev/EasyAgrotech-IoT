@@ -7,55 +7,109 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-<div class="min-h-screen flex items-center justify-center bg-cover bg-center relative overflow-hidden p-4"
-     style="background-image: url('https://easyagrotech.com/wp-content/uploads/2024/01/egfactory.webp');">
 
-  <!-- Floating abstract shapes -->
-  <span class="absolute w-32 h-32 bg-white/10 rounded-full top-12 left-8 animate-bounce-slow"></span>
-  <span class="absolute w-48 h-48 bg-white/5 rounded-full bottom-16 right-10 animate-spin-slow"></span>
-  <span class="absolute w-24 h-24 bg-white/20 rounded-full top-1/2 left-1/4 animate-ping-slow"></span>
+<div class="min-h-screen flex items-center justify-center 
+            bg-gradient-to-br from-indigo-100 via-blue-100 to-purple-100 p-6">
 
-  <!-- Profile Card -->
-  <div class="bg-white/20 backdrop-blur-lg shadow-xl rounded-3xl w-full max-w-sm p-8 flex flex-col items-center relative z-10 border border-white/30">
-    
-    <!-- Avatar with hover effect -->
-    <div class="w-28 h-28 rounded-full overflow-hidden mb-6 shadow-lg transform transition-transform duration-500 hover:scale-110">
-      <img src="https://i.pravatar.cc/150?img=32" alt="User Avatar" class="w-full h-full object-cover">
+  <!-- Card -->
+  <div class="relative w-full max-w-sm
+              bg-white/80 backdrop-blur-2xl
+              rounded-3xl
+              shadow-[0_25px_70px_rgba(0,0,0,0.25)]
+              border border-white/60
+              px-6 py-8">
+      <!-- Settings -->
+      <div class="absolute top-4 right-4">
+        <div class="relative">
+
+          <!-- Button -->
+          <button id="settingsBtn"
+            class="flex items-center justify-center w-10 h-10
+                  rounded-full bg-white/90
+                  shadow-md hover:shadow-xl
+                  active:scale-95
+                  transition-all duration-300">
+
+            <svg class="w-5 h-5 text-gray-600 hover:text-indigo-600"
+                fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33V4a2 2 0 014 0v.09c0 .69.4 1.31 1 1.59.6.28 1.31.17 1.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06c-.5.5-.61 1.22-.33 1.82.28.6.9 1 1.59 1H21a2 2 0 010 4h-.09c-.69 0-1.31.4-1.51 1z" />
+            </svg>
+          </button>
+
+          <!-- Dropdown -->
+          <div id="settingsMenu"
+            class="absolute right-0 mt-3 w-44
+                  bg-white rounded-2xl shadow-2xl
+                  opacity-0 scale-95 pointer-events-none
+                  transition-all duration-300 z-40">
+
+            <a href="#" class="block px-4 py-3 text-sm hover:bg-gray-100 rounded-t-2xl">
+              Records
+            </a>
+            <a href="#" class="block px-4 py-3 text-sm hover:bg-gray-100">
+              Service Request
+            </a>
+            <a href="#" class="block px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-b-2xl">
+              Logout
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+
+    <!-- Profile -->
+    <div class="flex flex-col items-center text-center mt-6">
+
+      <!-- Avatar -->
+      <div class="relative">
+        <div class="absolute inset-0 rounded-full 
+                    bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 
+                    blur-2xl opacity-40"></div>
+
+        <div class="relative w-32 h-32 rounded-full overflow-hidden
+                    border-4 border-white shadow-xl">
+          <img src="https://easyagrotech.com/wp-content/uploads/2025/12/cropped-Favicon-EG-2-300x300.png"
+               class="w-full h-full object-cover" />
+        </div>
+      </div>
+
+      <!-- Text -->
+      <h2 class="mt-6 text-2xl font-bold text-gray-800">
+         <p><strong>Username:</strong> <%= username %></p>
+      </h2>
+
+      <p class="text-sm text-gray-500 mt-1">
+        Easy Agrotech
+      </p>
+      <p class="text-sm text-gray-500 mt-1">
+        Smart Monitoring System
+      </p>
+
+      <!-- Divider -->
+      <div class="w-16 h-1 bg-gradient-to-r 
+                  from-indigo-500 to-purple-500 
+                  rounded-full my-5"></div>
+
+      <!-- Logout Button -->
+      <button
+        class="w-full py-3 rounded-2xl
+               bg-gradient-to-r from-red-500 to-pink-500
+               text-white font-semibold
+               shadow-lg hover:shadow-xl
+               hover:scale-[1.02] active:scale-95
+               transition-all duration-300 text-xl">
+        Logout
+      </button>
+
     </div>
-
-    <!-- Username -->
-    <div class="w-full mb-4 text-center">
-      <p class="text-gray-200 font-medium text-sm">Username</p>
-      <p class="text-white font-bold text-2xl">JohnDoe</p>
-    </div>
-
-    <!-- Password -->
-    <div class="w-full mb-6 text-center">
-      <p class="text-gray-200 font-medium text-sm">Password</p>
-      <p class="text-white font-bold text-xl tracking-widest">••••••••</p>
-    </div>
-
-    <!-- Logout Button -->
-    <a href="/user_auth" class="w-full text-center bg-gradient-to-r from-pink-500 to-purple-500 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all duration-300">
-      Logout
-    </a>
 
   </div>
-
-  <!-- Custom Animations -->
-  <style>
-    @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .animate-spin-slow { animation: spin-slow 30s linear infinite; }
-
-    @keyframes bounce-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-    .animate-bounce-slow { animation: bounce-slow 6s ease-in-out infinite; }
-
-    @keyframes ping-slow { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 0.2; } }
-    .animate-ping-slow { animation: ping-slow 8s infinite; }
-  </style>
-
 </div>
-
 
 
 
@@ -90,6 +144,24 @@
 
     
      
+
+
+    <script>
+  const btn = document.getElementById("settingsBtn");
+  const menu = document.getElementById("settingsMenu");
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("opacity-0");
+    menu.classList.toggle("scale-95");
+    menu.classList.toggle("pointer-events-none");
+  });
+
+  document.addEventListener("click", () => {
+    menu.classList.add("opacity-0", "scale-95", "pointer-events-none");
+  });
+</script>
+
 
 </body>
 </html>
