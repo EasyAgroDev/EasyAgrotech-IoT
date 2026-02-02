@@ -96,8 +96,14 @@ router.get('/admin/logout', (req, res) => {
 });
 // User Login ,Authentication
 router.get("/user_auth", (req, res) => {
+  if (req.session.user) {
+    // Already logged in → NEVER show login again
+    return res.redirect("/app_data");
+  }
+
   res.render("user_auth", { title: "User Login", error: null });
 });
+
 
 
 router.post("/user_auth", async (req, res) => {
