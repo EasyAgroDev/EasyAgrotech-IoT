@@ -1,6 +1,6 @@
 {
   "name": "Easy AgroTech IoT",
-  "short_name": "AgroTech",
+  "short_name": "Farm Monitor",
   "start_url": "/app_data",
   "display": "standalone",
   "background_color": "#ffffff",
